@@ -1,0 +1,28 @@
+<% layout('/layout/page') %>
+<% block('title', 'Hello chat') -%>
+
+<p class="">General chat!</p>
+<ul id="messages"></ul>
+<form action="">
+    <input id="m" autocomplete="off" /><button>Send</button>
+</form>
+<script src="/vendor/bower_components/socket.io-client/dist/socket.io.js"></script>
+<script>
+    $(function () {
+        var socket = io();
+        $('form').submit(function(e){
+            e.preventDefault(); // prevents page reloading
+            var sms = $('#m').val();
+            socket.emit('chat message', sms, function (data) {
+                console.log(data);
+                $('#messages').append($('<li>').text(sms));
+            });
+            $('#m').val('');
+            return false;
+        });
+        socket.on('chat message', function(msg){
+            $('#messages').append($('<li>').text(msg));
+            window.scrollTo(0, document.body.scrollHeight);
+        });
+    });
+</script>
